@@ -64,7 +64,7 @@
     {% endfor %}
     </select>
 </h2>
-<div id="diff" data-pk="{{ version.pk }}" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div id="diff" data-pk="{{ version.pk }}" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 </div>
 {% else %}
   <h2 class="expandy_header expanded col-xs-12 col-sm-12 col-md-12 col-lg-12">FAQ</h2>
@@ -177,9 +177,16 @@
 {% block head %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'css/review.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/highlight.css' %}" />
+  <script src="{% static 'js/highlight.min.js' %}"></script>
   <script>
       jQuery(function ($) {
           require(['review-main'], function(){});
+      });
+
+      hljs.configure({
+        ignoreUnescapedHTML: true,
+        cssSelector: '.code-line',
       });
   </script>
 {% endblock %}
