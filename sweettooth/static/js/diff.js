@@ -126,10 +126,10 @@ define(['jquery', 'template!diff/equals_chunk_row'], function ($, rowTemplate) {
 			.append($('<td>', {'class': 'new linum'}).text(line.newlinenum))
 			.append($('<td>', {'class': 'new contents'})
 				.append(
-          $('<span>', {'class': `code-line ${language}`})
-				    .append(buildReplaceRegions(line.newregion, contents[line.newindex]))
-        )
-      );
+        			$('<span>', {'class': `code-line ${language}`})
+				    	.append(buildReplaceRegions(line.newregion, contents[line.newindex]))
+        		)
+    	);
 	}
 
 	function buildInsertChunk(chunk, oldContents, newContents, language) {
@@ -147,7 +147,7 @@ define(['jquery', 'template!diff/equals_chunk_row'], function ($, rowTemplate) {
 					$('<span>', {'class': `code-line ${language}`})
 						.append(buildReplaceRegions(line.oldregion, contents[line.oldindex]))
 				)
-      );
+    	);
 	}
 
 	function buildDeleteChunk(chunk, oldContents, newContents, language) {
