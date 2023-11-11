@@ -141,13 +141,20 @@ class Extension(models.Model):
     uuid = models.CharField(max_length=200, unique=True, db_index=True)
     slug = autoslug.AutoSlugField(populate_from="name")
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL, db_index=True, on_delete=models.PROTECT
+        settings.AUTH_USER_MODEL,
+        related_name="extensions",
+        db_index=True,
+        on_delete=models.PROTECT,
     )
     description = models.TextField(blank=True)
     url = HttpURLField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(default=None, blank=True, null=True)
     downloads = models.PositiveIntegerField(default=0)
     popularity = models.IntegerField(default=0)
+    recommended = models.BooleanField(default=False)
+    rating = models.FloatField(default=0)
+    rated = models.IntegerField(default=0)
     allow_comments = models.BooleanField(default=True)
     donation_json_field = None
 
@@ -476,6 +483,19 @@ def version_name_validator(value):
         )
 
 
+class Licenses(models.TextChoices):
+    # https://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
+    Apache20 = "Apache-2.0", "Apache 2.0"
+    BSD2Clause = "BSD-2-Clause", "2-Clause BSD"
+    BSD3Clause = "BSD-3-Clause", "3-Clause BSD"
+    GPL20 = "GPL-2.0", "GPL 2.0"
+    GPL20OrLater = "GPL-2.0-or-later", "GPL-2.0 or later"
+    GPL30 = "GPL-3.0", "GPL 3.0"
+    GPL30OrLater = "GPL-3.0-or-later", "GPL 3.0 or later"
+    MIT = "MIT", "MIT"
+    MPL20 = "MPL-2.0", "MPL 2.0"
+
+
 class ExtensionVersion(models.Model):
     class Meta:
         unique_together = (("extension", "version"),)
@@ -502,6 +522,10 @@ class ExtensionVersion(models.Model):
     status = models.PositiveIntegerField(choices=STATUSES.items())
     shell_versions = models.ManyToManyField(ShellVersion)
     session_modes = models.ManyToManyField(SessionMode)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    license = models.CharField(
+        choices=Licenses.choices, default=Licenses.GPL20OrLater, max_length=24
+    )
 
     source = models.FileField(upload_to=make_filename, max_length=filename_max_length)
 
