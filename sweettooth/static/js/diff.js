@@ -20,20 +20,20 @@ define(['jquery', 'template!diff/equals_chunk_row'], function ($, rowTemplate) {
 	//
 	// Each "buildChunk" function below should build full row(s).
 
-	function buildEqualChunk(chunk, oldContents, newContents) {
+	function buildEqualChunk(chunk, oldContents, newContents, language) {
 		let $elems = [];
 
 		for (let i in chunk.lines)
 		{
 			let line = chunk.lines[i];
 
-			var contents = oldContents[line.oldindex];
-
 			var $row = $(rowTemplate.render({
 				oldlinenum: line.oldlinenum,
 				newlinenum: line.newlinenum,
-				contents: contents
+				contents: oldContents[line.oldindex]
 			}));
+
+			$row.find('.code-line').addClass(`${language}`)
 
 			if (i == 0)
 			{
@@ -120,27 +120,43 @@ define(['jquery', 'template!diff/equals_chunk_row'], function ($, rowTemplate) {
 		return regionElems;
 	}
 
-	function buildInsertLine(line, contents) {
-		return $('<tr>', {'class': 'diff-line inserted'}).append($('<td>', {'class': 'linum'})).append($('<td>', {'class': 'new linum'}).text(line.newlinenum)).append($('<td>', {'class': 'new contents'}).append(buildReplaceRegions(line.newregion, contents[line.newindex])));
+	function buildInsertLine(line, contents, language) {
+		return $('<tr>', {'class': 'diff-line inserted'})
+			.append($('<td>', {'class': 'linum'}))
+			.append($('<td>', {'class': 'new linum'}).text(line.newlinenum))
+			.append($('<td>', {'class': 'new contents'})
+				.append(
+        			$('<span>', {'class': `code-line ${language}`})
+				    	.append(buildReplaceRegions(line.newregion, contents[line.newindex]))
+        		)
+    	);
 	}
 
-	function buildInsertChunk(chunk, oldContents, newContents) {
+	function buildInsertChunk(chunk, oldContents, newContents, language) {
 		return $.map(chunk.lines, function (line) {
-			return buildInsertLine(line, newContents);
+			return buildInsertLine(line, newContents, language);
 		});
 	}
 
-	function buildDeleteLine(line, contents) {
-		return $('<tr>', {'class': 'diff-line deleted'}).append($('<td>', {'class': 'old linum'}).text(line.oldlinenum)).append($('<td>', {'class': 'linum'})).append($('<td>', {'class': 'old contents'}).append(buildReplaceRegions(line.oldregion, contents[line.oldindex])));
+	function buildDeleteLine(line, contents, language) {
+		return $('<tr>', {'class': 'diff-line deleted'})
+			.append($('<td>', {'class': 'old linum'}).text(line.oldlinenum))
+			.append($('<td>', {'class': 'linum'}))
+			.append($('<td>', {'class': 'old contents'})
+				.append(
+					$('<span>', {'class': `code-line ${language}`})
+						.append(buildReplaceRegions(line.oldregion, contents[line.oldindex]))
+				)
+    	);
 	}
 
-	function buildDeleteChunk(chunk, oldContents, newContents) {
+	function buildDeleteChunk(chunk, oldContents, newContents, language) {
 		return $.map(chunk.lines, function (line) {
-			return buildDeleteLine(line, oldContents);
+			return buildDeleteLine(line, oldContents, language);
 		});
 	}
 
-	function buildReplaceChunk(chunk, oldContents, newContents) {
+	function buildReplaceChunk(chunk, oldContents, newContents, language) {
 		// Replace chunks are built up of a delete chunk and
 		// an insert chunk, with special inline replace regions
 		// for the inline modifications.
@@ -149,8 +165,8 @@ define(['jquery', 'template!diff/equals_chunk_row'], function ($, rowTemplate) {
 
 		for (let line of chunk.lines)
 		{
-			deleteChunk.push(buildDeleteLine(line, oldContents));
-			insertChunk.push(buildInsertLine(line, newContents));
+			deleteChunk.push(buildDeleteLine(line, oldContents, language));
+			insertChunk.push(buildInsertLine(line, newContents, language));
 		}
 
 		return deleteChunk.concat(insertChunk);
@@ -163,12 +179,14 @@ define(['jquery', 'template!diff/equals_chunk_row'], function ($, rowTemplate) {
 		'replace': buildReplaceChunk
 	};
 
-	exports.buildDiffTable = function (chunks, oldContents, newContents) {
+	exports.buildDiffTable = function (filename, chunks, oldContents, newContents) {
 		var $table = $('<table>', {'class': 'code'});
+
+    	var language = !filename.includes('.') ? 'undefined' : filename.split('.').pop();
 
 		for (let chunk of chunks)
 		{
-			$table.append(operations[chunk.change](chunk, oldContents, newContents));
+			$table.append(operations[chunk.change](chunk, oldContents, newContents, language));
 		}
 
 		$table.on('click', 'a.collapsable-trigger', function (event) {
