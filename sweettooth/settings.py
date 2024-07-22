@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "markdown2",
 ]
 
 MIDDLEWARE = [

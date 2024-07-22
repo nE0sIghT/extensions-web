@@ -782,8 +782,6 @@ textarea:focus {
 
 .review blockquote {
     padding: .5em;
-    white-space: pre;
-    white-space: pre-wrap;
     border: 1px solid #BABDB6;
     border-left: 1em solid #A5A5AF;
     border-radius: 2px 2px 2px 2px;
