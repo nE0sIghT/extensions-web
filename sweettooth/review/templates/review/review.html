@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load extension_icon %}
+{% load markdown_tags %}
 
 {% block title %}Review "{{ extension.name }}" version {{ version.display_full_version }} - {{ block.super }}{% endblock %}
 
@@ -144,7 +145,7 @@
     posted a review
     {% endif %}
     <time title="{{ review.date|date:"c" }}Z">{{ review.date|date:"F j, Y" }}</time>
-    <blockquote>{{ review.comments }}</blockquote>
+    <blockquote>{% autoescape off %}{{ review.comments|markdown2 }}{% endautoescape %}</blockquote>
   </div>
   {% empty %}
   <p>No reviews.</p>
