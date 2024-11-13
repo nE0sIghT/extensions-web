@@ -381,6 +381,10 @@ lazy-object-proxy==1.9.0 \
     --hash=sha256:f2457189d8257dd41ae9b434ba33298aec198e30adf2dcdaaa3a28b9994f6adb \
     --hash=sha256:f699ac1c768270c9e384e4cbd268d6e67aebcfae6cd623b4d7c3bfde5a35db59
     # via astroid
+markdown2==2.5.0 \
+    --hash=sha256:300d4429b620ebc974ef512339a9e08bc080473f95135a91f33906e24e8280c1 \
+    --hash=sha256:9bff02911f8b617b61eb269c4c1a5f9b2087d7ff051604f66a61b63cab30adc2
+    # via -r requirements.in
 mccabe==0.7.0 \
     --hash=sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325 \
     --hash=sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e

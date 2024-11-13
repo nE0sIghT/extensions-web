@@ -10,6 +10,7 @@ django-recaptcha==3.0.0
 django-registration==3.4
 drf-nested-routers==0.93.4
 drf-spectacular[sidecar]==0.26.5
+markdown2==2.5.0
 Pygments==2.15.1
 pillow==10.3.0
 polib==1.1.1
