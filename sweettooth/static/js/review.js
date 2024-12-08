@@ -45,7 +45,7 @@ define(['jquery', 'diff'], function($, diff) {
             data: { filename: filename },
             url: `${REVIEW_URL_BASE}/get-file-diff/${pk}${compareVersionUrlPart()}`
         }).pipe(function(data) {
-            return diff.buildDiffTable(data.chunks, data.oldlines, data.newlines);
+            return diff.buildDiffTable(filename, data.chunks, data.oldlines, data.newlines);
         });
     }
 
@@ -96,6 +96,9 @@ define(['jquery', 'diff'], function($, diff) {
 
                 currentFilename = filename;
                 $currentFile = $file;
+
+                // Syntax highlight the text based on the language.
+                hljs.highlightAll();
             }
 
             req.done(function(files) {
